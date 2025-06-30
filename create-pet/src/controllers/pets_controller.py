@@ -1,3 +1,4 @@
+import os
 import requests
 from fastapi import HTTPException
 from src.schemas.pet_schema import PetCreate
@@ -6,9 +7,15 @@ from src.database.database import get_connection
 
 def create_pet_in_db(pet: PetCreate):
     try:
+
+         # 🌐 Leer dirección y puerto del microservicio de clientes desde variables de entorno
+        CLIENT_SERVICE_HOST = os.getenv("CLIENT_SERVICE_HOST", "localhost")
+        CLIENT_SERVICE_PORT = os.getenv("CLIENT_SERVICE_PORT", "3002")
+        CLIENT_SERVICE_URL = f"http://{CLIENT_SERVICE_HOST}:{CLIENT_SERVICE_PORT}/api/clients/{pet.client_id}"
+
         # 🔍 Validar si el cliente existe haciendo una solicitud al microservicio de clientes
         try:
-            response = requests.get(f"http://localhost:3002/api/clients/{pet.client_id}")
+            response = requests.get(CLIENT_SERVICE_URL)
             if response.status_code == 404:
                 raise HTTPException(status_code=404, detail="Client not found")
             elif not response.ok:
