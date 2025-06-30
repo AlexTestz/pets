@@ -18,6 +18,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}  # La clave privada SSH almacenada en los secretos
           script: |
             cd ~/pets  # Se asegura de estar en el directorio correcto en EC2
+             git pull origin QA # Trae los últimos cambios de la rama QA
             sudo docker-compose pull  # Baja las últimas imágenes de Docker
             sudo docker-compose down  # Detiene y elimina los contenedores previos
             sudo docker-compose up -d  # Levanta los contenedores en segundo plano
