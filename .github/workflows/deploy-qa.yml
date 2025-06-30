@@ -1,0 +1,23 @@
+name: Deploy Users Auth QA
+
+on:
+  push:
+    branches:
+      - QA  # Cuando se haga push a la rama QA, se activará este flujo de trabajo
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest  # El flujo de trabajo corre en un runner Ubuntu de GitHub Actions
+
+    steps:
+      - name: Desplegar a EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.0  # Usa una acción de GitHub para SSH
+        with:
+          host: ${{ secrets.EC2_HOST }}  # Obtiene la IP pública de EC2 desde los secretos
+          username: ubuntu  # El usuario predeterminado en las instancias EC2 (para Ubuntu)
+          key: ${{ secrets.EC2_SSH_KEY }}  # La clave privada SSH almacenada en los secretos
+          script: |
+            cd ~/users-auth  # Se asegura de estar en el directorio correcto en EC2
+            sudo docker-compose pull  # Baja las últimas imágenes de Docker
+            sudo docker-compose down  # Detiene y elimina los contenedores previos
+            sudo docker-compose up -d  # Levanta los contenedores en segundo plano
