@@ -17,7 +17,7 @@ jobs:
           username: ubuntu  # El usuario predeterminado en las instancias EC2 (para Ubuntu)
           key: ${{ secrets.EC2_SSH_KEY }}  # La clave privada SSH almacenada en los secretos
           script: |
-            cd ~/users-auth  # Se asegura de estar en el directorio correcto en EC2
+            cd ~/pets  # Se asegura de estar en el directorio correcto en EC2
             sudo docker-compose pull  # Baja las últimas imágenes de Docker
             sudo docker-compose down  # Detiene y elimina los contenedores previos
             sudo docker-compose up -d  # Levanta los contenedores en segundo plano
