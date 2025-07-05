@@ -64,7 +64,7 @@ jobs:
             -e DB_PORT=${{ secrets.DB_PORT }} \
             -e DB_USER=${{ secrets.DB_USER }} \
             -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
-            -e DB_DATABASE=${{ secrets.DB_DATABASE }} \
+            -e DB_NAME=${{ secrets.DB_NAME }} \
             -e GET_CLIENT_URL=${{ secrets.GET_CLIENT_URL }} \
             alexmpz/update-pet:qa
           
@@ -74,7 +74,7 @@ jobs:
             -e DB_PORT=${{ secrets.DB_PORT }} \
             -e DB_USER=${{ secrets.DB_USER }} \
             -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
-            -e DB_DATABASE=${{ secrets.DB_DATABASE }} \
+            -e DB_NAME=${{ secrets.DB_NAME }} \
             alexmpz/get-pet:qa
           
           # Contenedor para delete-pet
@@ -83,7 +83,7 @@ jobs:
             -e DB_PORT=${{ secrets.DB_PORT }} \
             -e DB_USER=${{ secrets.DB_USER }} \
             -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
-            -e DB_DATABASE=${{ secrets.DB_DATABASE }} \
+            -e DB_NAME=${{ secrets.DB_NAME }} \
             alexmpz/delete-pet:qa
           
           # Contenedor para create-pet
@@ -92,7 +92,7 @@ jobs:
             -e DB_PORT=${{ secrets.DB_PORT }} \
             -e DB_USER=${{ secrets.DB_USER }} \
             -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
-            -e DB_DATABASE=${{ secrets.DB_DATABASE }} \
+            -e DB_NAME=${{ secrets.DB_NAME }} \
             -e CLIENT_SERVICE_HOST=${{ secrets.CLIENT_SERVICE_HOST }} \
             -e CLIENT_SERVICE_PORT=${{ secrets.CLIENT_SERVICE_PORT }} \
             alexmpz/create-pet:qa
