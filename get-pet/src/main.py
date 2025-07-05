@@ -8,7 +8,7 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Permitir CORS (si React o Frontend)
+# Enable CORS (if React or Frontend)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -17,7 +17,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Rutas
+# Set up routes
 app.include_router(pets_routes.router)
 
 @app.get("/")

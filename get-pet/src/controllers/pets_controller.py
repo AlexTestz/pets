@@ -15,7 +15,7 @@ def get_all_pets():
         return pets
 
     except Exception as e:
-        print("❌ Error al obtener mascotas:", e)
+        print("❌ Error obtaining pets:", e)
         raise HTTPException(status_code=500, detail="Server error retrieving pets")
 
 def get_pet_by_id(pet_id: int):
@@ -35,7 +35,7 @@ def get_pet_by_id(pet_id: int):
         return pet
 
     except HTTPException:
-        raise  # Permite que el 404 pase tal cual
+        raise  # Allow the 404 to pass as is
     except Exception as e:
         print("❌ Error retrieving pet:", e)
         raise HTTPException(status_code=500, detail="Server error retrieving pet")

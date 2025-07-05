@@ -1,24 +1,98 @@
-name: Deploy Users Auth QA
+name: Build and Deploy to EC2
 
 on:
   push:
     branches:
-      - QA  # Cuando se haga push a la rama QA, se activará este flujo de trabajo
+      - QA
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest  # El flujo de trabajo corre en un runner Ubuntu de GitHub Actions
+  build_and_deploy:
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Desplegar a EC2 via SSH
-        uses: appleboy/ssh-action@v1.0.0  # Usa una acción de GitHub para SSH
-        with:
-          host: ${{ secrets.EC2_HOST }}  # Obtiene la IP pública de EC2 desde los secretos
-          username: ubuntu  # El usuario predeterminado en las instancias EC2 (para Ubuntu)
-          key: ${{ secrets.EC2_SSH_KEY }}  # La clave privada SSH almacenada en los secretos
-          script: |
-            cd ~/pets  # Se asegura de estar en el directorio correcto en EC2
-             git pull origin QA # Trae los últimos cambios de la rama QA
-            sudo docker-compose pull  # Baja las últimas imágenes de Docker
-            sudo docker-compose down  # Detiene y elimina los contenedores previos
-            sudo docker-compose up -d  # Levanta los contenedores en segundo plano
+    # Paso 1: Checkout code.
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    # Paso 2: Configuration Docker
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    # Paso 3: Login on Docker Hub
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    # Paso 4: Build and upload Docker images
+    - name: Build and push Docker images
+      run: |
+        docker build -t alexmpz/update-pet:qa ./update-pet
+        docker build -t alexmpz/get-pet:qa ./get-pet
+        docker build -t alexmpz/delete-pet:qa ./delete-pet
+        docker build -t alexmpz/create-pet:qa ./create-pet
+        docker push alexmpz/update-pet:qa
+        docker push alexmpz/get-pet:qa
+        docker push alexmpz/delete-pet:qa
+        docker push alexmpz/create-pet:qa
+
+    # Paso 5: Connect to the EC2 instance using elastic IP and deploy the containers
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@v0.1.8
+      with:
+        host: ${{ secrets.EC2_HOSTT }}  # IP EC2 elastic
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.EC2_PRIVATE_KEY }}
+        port: 22
+        script: |
+          # Detener y eliminar contenedores antiguos si existen
+          docker stop $(docker ps -aq)
+          docker rm $(docker ps -aq)
+          
+          # Descargar imágenes desde Docker Hub
+          docker pull alexmpz/update-pet:qa
+          docker pull alexmpz/get-pet:qa
+          docker pull alexmpz/delete-pet:qa
+          docker pull alexmpz/create-pet:qa
+          
+          # Ejecutar contenedores en puertos específicos, pasando las variables de entorno
+
+          # Contenedor para update-pet
+          docker run -d -p 3013:3013 \
+            -e DB_HOST=${{ secrets.DB_HOST }} \
+            -e DB_PORT=${{ secrets.DB_PORT }} \
+            -e DB_USER=${{ secrets.DB_USER }} \
+            -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+            -e DB_DATABASE=${{ secrets.DB_DATABASE }} \
+            -e GET_CLIENT_URL=${{ secrets.GET_CLIENT_URL }} \
+            alexmpz/update-pet:qa
+          
+          # Contenedor para get-pet
+          docker run -d -p 3012:3012 \
+            -e DB_HOST=${{ secrets.DB_HOST }} \
+            -e DB_PORT=${{ secrets.DB_PORT }} \
+            -e DB_USER=${{ secrets.DB_USER }} \
+            -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+            -e DB_DATABASE=${{ secrets.DB_DATABASE }} \
+            alexmpz/get-pet:qa
+          
+          # Contenedor para delete-pet
+          docker run -d -p 3014:3014 \
+            -e DB_HOST=${{ secrets.DB_HOST }} \
+            -e DB_PORT=${{ secrets.DB_PORT }} \
+            -e DB_USER=${{ secrets.DB_USER }} \
+            -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+            -e DB_DATABASE=${{ secrets.DB_DATABASE }} \
+            alexmpz/delete-pet:qa
+          
+          # Contenedor para create-pet
+          docker run -d -p 3011:3011 \
+            -e DB_HOST=${{ secrets.DB_HOST }} \
+            -e DB_PORT=${{ secrets.DB_PORT }} \
+            -e DB_USER=${{ secrets.DB_USER }} \
+            -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+            -e DB_DATABASE=${{ secrets.DB_DATABASE }} \
+            -e CLIENT_SERVICE_HOST=${{ secrets.CLIENT_SERVICE_HOST }} \
+            -e CLIENT_SERVICE_PORT=${{ secrets.CLIENT_SERVICE_PORT }} \
+            alexmpz/create-pet:qa

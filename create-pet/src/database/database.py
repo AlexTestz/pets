@@ -11,7 +11,7 @@ def get_connection():
             database=settings.DB_NAME,
             user=settings.DB_USER,
             password=settings.DB_PASSWORD,
-            cursor_factory=RealDictCursor  # Retorna resultados como diccionarios
+            cursor_factory=RealDictCursor  # returns results as dictionaries
         )
         return conn
     except Exception as e:

@@ -9,19 +9,19 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# CORS middleware (permite que React u otros frontends se conecten)
+# CORS middleware (allows React or other frontends to connect)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Puedes restringir esto luego
+    allow_origins=["*"],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Montar rutas
+# Set up routes
 app.include_router(pets_routes.router)
 
-# Endpoint raíz (prueba de salud)
+# Root endpoint (health check)
 @app.get("/")
 def health_check():
     return {"message": "✅ Create Pet Service is running!"}

@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from src.routes.pets_routes import router  # Ajusta el import según tu estructura
+from src.routes.pets_routes import router  
 
 app = FastAPI(
     title="Update Pet Microservice",
@@ -8,7 +8,7 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Middleware CORS (si usas frontend)
+# CORS middleware (if you use frontend)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -17,7 +17,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Incluir rutas
+# Include routes
 app.include_router(router)
 
 @app.get("/")

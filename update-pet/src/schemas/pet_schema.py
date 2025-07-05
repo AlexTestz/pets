@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field, constr
 from typing import Optional
 from datetime import date
 
-# ✅ Para entrada de datos (PUT / PATCH)
+# ✅ For data entry (PUT / PATCH)
 class PetUpdate(BaseModel):
     name: Optional[constr(min_length=2)] = Field(None, example="Firulais")
     species: Optional[constr(min_length=3)] = Field(None, example="Dog")
@@ -12,7 +12,7 @@ class PetUpdate(BaseModel):
     notes: Optional[str] = Field(None, example="Very friendly")
     client_id: Optional[int] = Field(None, example=1)
 
-# ✅ Para respuestas (después de actualizar)
+# ✅ For answers (after updating)
 class Pet(BaseModel):
     id: int
     name: str

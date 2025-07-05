@@ -6,12 +6,12 @@ def delete_pet_by_id(pet_id: int):
         conn = get_connection()
         cur = conn.cursor()
 
-        # Verificar si la mascota existe
+        # Check if the pet existste
         cur.execute("SELECT id FROM pets WHERE id = %s", (pet_id,))
         if cur.fetchone() is None:
             raise HTTPException(status_code=404, detail="Pet not found")
 
-        # Eliminar la mascota
+        # Delete pet
         cur.execute("DELETE FROM pets WHERE id = %s", (pet_id,))
         conn.commit()
 

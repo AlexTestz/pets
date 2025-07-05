@@ -1,52 +1,54 @@
 # Delete Pet Microservice
 
-## Descripción
-Microservicio encargado de eliminar mascotas registradas en el sistema.
+## Description  
+Microservice responsible for deleting registered pets in the system.
 
 ---
 
-## Tecnologías utilizadas
+## Technologies Used
 
-- **Lenguaje:** Python 3.10
+- **Language:** Python 3.10  
 - **Framework:** FastAPI
 
 ---
 
-## Estilo de arquitectura
+## Architecture Style
 
-- **API RESTful:** Todas las operaciones se exponen como endpoints HTTP siguiendo el estilo REST.
-
----
-
-## Patrones de diseño aplicados
-
-- **KISS (Keep It Simple, Stupid):** El código es sencillo y directo, evitando complejidad innecesaria.
-- **DRY (Don't Repeat Yourself):** Se reutilizan funciones y lógica para evitar duplicidad.
-- **SOLID:** Se aplican principios como la separación de responsabilidades y la inyección de dependencias.
+- **RESTful API:** All operations are exposed as HTTP endpoints following REST principles.
 
 ---
 
-## Base de datos
+## Design Patterns Applied
 
-- **PostgreSQL:** Conexión mediante `psycopg2` y uso de cursores tipo diccionario para facilitar el manejo de datos.
-
----
-
-## Arquitectura interna
-
-- **N-capas:** Separación clara entre rutas (routers), controladores (controllers), esquemas (schemas), utilidades (utils) y acceso a datos (database).
-- **Modelo similar a MVC:** Aunque no hay modelos ORM explícitos, la estructura sigue la separación de responsabilidades típica de MVC.
+- **KISS (Keep It Simple, Stupid):** Code is straightforward and simple, avoiding unnecessary complexity.  
+- **DRY (Don't Repeat Yourself):** Functions and logic are reused to avoid duplication.  
+- **SOLID:** Principles such as separation of concerns and dependency injection are applied.
 
 ---
 
-## Seguridad y Middleware
+## Database
 
-- **CORS:** Configurado para aceptar peticiones desde cualquier origen (`allow_origins=["*"]`), útil para desarrollo y pruebas con frontends como React.
-- **JWT:** Actualmente este microservicio no implementa autenticación JWT, pero puede integrarse fácilmente en el futuro.
+- **PostgreSQL:** Connection through `psycopg2` using dictionary-style cursors for easier data handling.
 
 ---
 
-## Estructura del proyecto
+## Internal Architecture
+
+- **N-tier architecture:** Clear separation between routes (routers), controllers, schemas, utilities (utils), and data access (database).  
+- **MVC-like model:** Although no explicit ORM models are used, the structure follows typical MVC separation of concerns.
+
+---
+
+## Security and Middleware
+
+- **CORS:** Configured to accept requests from any origin (`allow_origins=["*"]`), useful for development and testing with frontends like React.  
+- **JWT:** Currently this microservice does not implement JWT authentication but can be easily integrated in the future.
+
+---
+
+## Project Structure
+
+
 
 ```
 delete-pet/
@@ -67,47 +69,45 @@ delete-pet/
 
 ---
 
-## Variables de entorno
-
-El microservicio utiliza variables de entorno para la configuración de la base de datos y servicios externos. Estas se definen en el archivo `.env`.
 
 ---
 
-## Ejecución local
+## Environment Variables
 
-1. Instala las dependencias:
+The microservice uses environment variables for database configuration and external services. These are defined in the `.env` file.
+
+---
+
+## Local Execution
+
+1. Install dependencies:  
    ```sh
    pip install -r requirements.txt
-   ```
-2. Ejecuta el microservicio:
-   ```sh
-   uvicorn src.main:app --reload --port 3014
-   ```
 
 ---
 
 ## Docker local
 
-1. Construye la imagen:
+1. build  imagen:
    ```sh
    docker build -t delete-pet .
    ```
-2. Ejecuta el contenedor:
+2. execute container:
    ```sh
    docker run -p 3014:3014 --env-file .env delete-pet
    ```
 
 ---
 
-## Endpoints principales
+## Endpoints 
 
-### Eliminar una mascota por ID
+### Delete pet by id
 
 - **DELETE** `/api/pets/{pet_id}`
 
 DELETE http://3.214.168.136:8000/api/pets/25
 
-#### Ejemplo de respuesta exitosa
+#### Example of a successful response
 
 ```json
 {
@@ -119,8 +119,8 @@ DELETE http://3.214.168.136:8000/api/pets/25
 http://34.229.27.85:3014/docs
 ---
 
-## Notas
+## Notes
 
-- Antes de eliminar una mascota, se valida la existencia de la mascota en la base de datos.
-- El código es fácilmente extensible para agregar autenticación, validaciones adicionales o nuevas funcionalidades.
-- El CORS está abierto para facilitar el desarrollo, pero se recomienda
+- Before deleting a pet, the existence of the pet in the database is validated.
+- The code is easily extensible to add authentication, additional validations, or new functionality.
+- CORS is open to facilitate development, but it is recommended

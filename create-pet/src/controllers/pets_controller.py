@@ -8,12 +8,12 @@ from src.database.database import get_connection
 def create_pet_in_db(pet: PetCreate):
     try:
 
-         # 🌐 Leer dirección y puerto del microservicio de clientes desde variables de entorno
+         # 🌐 Read the address and port of the client microservice from environment variables
         CLIENT_SERVICE_HOST = os.getenv("CLIENT_SERVICE_HOST", "localhost")
         CLIENT_SERVICE_PORT = os.getenv("CLIENT_SERVICE_PORT", "3002")
         CLIENT_SERVICE_URL = f"http://{CLIENT_SERVICE_HOST}:{CLIENT_SERVICE_PORT}/api/clients/{pet.client_id}"
 
-        # 🔍 Validar si el cliente existe haciendo una solicitud al microservicio de clientes
+        # 🔍 Validate whether the customer exists by making a request to the customer microservice.
         try:
             response = requests.get(CLIENT_SERVICE_URL)
             if response.status_code == 404:
@@ -24,7 +24,7 @@ def create_pet_in_db(pet: PetCreate):
             print("❌ Error contacting client service:", req_err)
             raise HTTPException(status_code=500, detail="Client service not reachable")
 
-        # ✅ Insertar mascota en la base de datos local
+        # ✅ Insert pet into local database
         conn = get_connection()
         cur = conn.cursor()
 

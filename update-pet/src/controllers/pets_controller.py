@@ -11,14 +11,14 @@ def update_pet_in_db(pet_id: int, pet_data: PetUpdate):
         conn = get_connection()
         cur = conn.cursor()
 
-        #  Verificar si existe la mascota
+        #  Check if the pet exists
         cur.execute("SELECT * FROM pets WHERE id = %s", (pet_id,))
         existing_pet = cur.fetchone()
         if existing_pet is None:
             raise HTTPException(status_code=404, detail="Pet not found")
         
 
-         #  Validar client_id (si viene)
+         #  Validate client_id (if provided)
         if pet_data.client_id is not None:
             client_service_url = os.getenv("GET_CLIENT_URL", "http://localhost:3002")
             try:
@@ -30,7 +30,7 @@ def update_pet_in_db(pet_id: int, pet_data: PetUpdate):
             except requests.exceptions.RequestException:
                 raise HTTPException(status_code=500, detail="Client service not reachable")
 
-        #  Preparar los campos a actualizar dinámicamente
+        #  Prepare the fields to be dynamically updated
         fields = []
         values = []
 
@@ -41,7 +41,7 @@ def update_pet_in_db(pet_id: int, pet_data: PetUpdate):
         if not fields:
             raise HTTPException(status_code=400, detail="No fields to update")
 
-        # 3️⃣ Ejecutar UPDATE
+        # 3️⃣ Run UPDATE
         query = f"""
             UPDATE pets SET {', '.join(fields)}
             WHERE id = %s

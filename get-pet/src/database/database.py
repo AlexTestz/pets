@@ -11,9 +11,9 @@ def get_connection():
             database=settings.DB_NAME,
             user=settings.DB_USER,
             password=settings.DB_PASSWORD,
-            cursor_factory=RealDictCursor  # Resultados como diccionarios
+            cursor_factory=RealDictCursor  
         )
         return conn
     except Exception as e:
-        print("❌ Error de conexión a la base de datos:", e)
+        print("❌ Database connection error:", e)
         raise
