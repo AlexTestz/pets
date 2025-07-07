@@ -1,0 +1,38 @@
+version: "3.9" #version
+
+services:
+  get-pet:
+    build:
+      context: ./get-pet
+    container_name: get-pet
+    ports:
+      - "3012:3012"
+    env_file:
+      - ./get-pet/.env
+
+  create-pet:
+    build:
+      context: ./create-pet
+    container_name: create-pet
+    ports:
+      - "3011:3011"
+    env_file:
+      - ./create-pet/.env
+
+  update-pet:
+    build:
+      context: ./update-pet
+    container_name: update-pet
+    ports:
+      - "3013:3013"
+    env_file:
+      - ./update-pet/.env
+
+  delete-pet:
+    build:
+      context: ./delete-pet
+    container_name: delete-pet
+    ports:
+      - "3014:3014"
+    env_file:
+      - ./delete-pet/.env
